@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { REGIONS_DEF, MAIN_CATEGORIES } from '../../data/categories';
 import { MarketRegion } from '../../types';
+import { getViewPath } from '../../utils/router';
 import {
   Search,
   Menu,
@@ -35,8 +36,13 @@ export const Header: React.FC<HeaderProps> = ({
 
   const currentRegionDef = REGIONS_DEF.find(r => r.id === selectedRegion) || REGIONS_DEF[0];
 
-  const handleNav = (view: string, param?: string) => {
-    onNavigate(view, param);
+  const handleNav = (e: React.MouseEvent | string, view?: string, param?: string) => {
+    if (typeof e === 'string') {
+      onNavigate(e, view);
+    } else {
+      e.preventDefault();
+      if (view) onNavigate(view, param);
+    }
     setMobileMenuOpen(false);
     setCategoriesDropdownOpen(false);
   };
@@ -94,12 +100,13 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </div>
 
-            <button
-              onClick={() => handleNav('admin')}
+            <a
+              href={getViewPath('admin')}
+              onClick={(e) => handleNav(e, 'admin')}
               className="text-slate-400 hover:text-white transition-colors text-[11px] font-medium underline underline-offset-2"
             >
               CMS Admin
-            </button>
+            </a>
           </div>
         </div>
       </div>
@@ -107,9 +114,10 @@ export const Header: React.FC<HeaderProps> = ({
       {/* Main Header */}
       <div className="max-w-7xl mx-auto px-4 py-3.5 flex items-center justify-between">
         {/* Brand Logo & Tagline */}
-        <div
-          onClick={() => handleNav('home')}
-          className="cursor-pointer group flex items-center gap-2.5"
+        <a
+          href={getViewPath('home')}
+          onClick={(e) => handleNav(e, 'home')}
+          className="group flex items-center gap-2.5"
         >
           <div className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-amber-500 flex items-center justify-center text-slate-950 font-black font-serif text-lg shadow-md shadow-amber-500/20 group-hover:bg-amber-400 transition-colors">
             B
@@ -122,36 +130,39 @@ export const Header: React.FC<HeaderProps> = ({
               Practical Ideas • Pakistan & Global Edition
             </span>
           </div>
-        </div>
+        </a>
 
         {/* Desktop Primary Nav */}
         <nav className="hidden lg:flex items-center space-x-2 text-[11px] font-bold uppercase tracking-wider">
-          <button
-            onClick={() => handleNav('home')}
+          <a
+            href={getViewPath('home')}
+            onClick={(e) => handleNav(e, 'home')}
             className={`px-3 py-2 rounded-lg transition-colors ${
               activeView === 'home' ? 'text-amber-400 bg-amber-500/10' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
             }`}
           >
             Home
-          </button>
+          </a>
 
-          <button
-            onClick={() => handleNav('opportunities')}
+          <a
+            href={getViewPath('opportunities')}
+            onClick={(e) => handleNav(e, 'opportunities')}
             className={`px-3 py-2 rounded-lg transition-colors ${
               activeView === 'opportunities' ? 'text-amber-400 bg-amber-500/10' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
             }`}
           >
             Business Ideas
-          </button>
+          </a>
 
-          <button
-            onClick={() => handleNav('market-research')}
+          <a
+            href={getViewPath('market-research')}
+            onClick={(e) => handleNav(e, 'market-research')}
             className={`px-3 py-2 rounded-lg transition-colors ${
               activeView === 'market-research' ? 'text-amber-400 bg-amber-500/10' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
             }`}
           >
             Market Research
-          </button>
+          </a>
 
           {/* Category Hub Dropdown */}
           <div className="relative">
@@ -169,36 +180,39 @@ export const Header: React.FC<HeaderProps> = ({
                 onMouseLeave={() => setCategoriesDropdownOpen(false)}
               >
                 {MAIN_CATEGORIES.map(cat => (
-                  <button
+                  <a
                     key={cat.id}
-                    onClick={() => handleNav('category', cat.slug)}
+                    href={getViewPath('category', cat.slug)}
+                    onClick={(e) => handleNav(e, 'category', cat.slug)}
                     className="w-full text-left px-4 py-2 hover:bg-slate-800 transition-colors flex items-center justify-between text-xs text-slate-300 hover:text-amber-400"
                   >
                     <span>{cat.name}</span>
                     <span className="text-[10px] text-slate-500">Explore →</span>
-                  </button>
+                  </a>
                 ))}
               </div>
             )}
           </div>
 
-          <button
-            onClick={() => handleNav('articles')}
+          <a
+            href={getViewPath('articles')}
+            onClick={(e) => handleNav(e, 'articles')}
             className={`px-3 py-2 rounded-lg transition-colors ${
               activeView === 'articles' ? 'text-amber-400 bg-amber-500/10' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
             }`}
           >
             Analysis & Articles
-          </button>
+          </a>
 
-          <button
-            onClick={() => handleNav('about')}
+          <a
+            href={getViewPath('about')}
+            onClick={(e) => handleNav(e, 'about')}
             className={`px-3 py-2 rounded-lg transition-colors ${
               activeView === 'about' ? 'text-amber-400 bg-amber-500/10' : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
             }`}
           >
             About
-          </button>
+          </a>
         </nav>
 
         {/* Right CTA & Search */}

@@ -1,11 +1,14 @@
 import React from 'react';
 import { CMSStore } from '../../services/cmsStore';
 import { MAIN_CATEGORIES } from '../../data/categories';
+import { CITY_CLUSTERS } from '../../data/cityClusters';
+import { INVESTMENT_TIERS } from '../../data/investmentTiers';
 import { AdPlaceholder } from '../common/AdPlaceholder';
 import { AffiliateResources } from '../common/AffiliateResources';
 import { NewsletterForm } from '../common/NewsletterForm';
 import { SEOMeta } from '../common/SEOMeta';
 import { MarketRegion } from '../../types';
+import { getViewPath } from '../../utils/router';
 import {
   Lightbulb,
   BarChart3,
@@ -18,6 +21,8 @@ import {
   Briefcase,
   Layers,
   Award,
+  MapPin,
+  DollarSign,
 } from 'lucide-react';
 
 interface HomeViewProps {
@@ -36,11 +41,17 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, selectedRegion, 
   const featuredReports = reports.filter(r => r.isFeatured || r.region === selectedRegion).slice(0, 3);
   const featuredArticles = articles.slice(0, 4);
 
+  const handleNav = (e: React.MouseEvent, view: string, param?: string) => {
+    e.preventDefault();
+    onNavigate(view, param);
+  };
+
   return (
     <div className="space-y-12 pb-12">
       <SEOMeta
         title="Business Ideas & Market Research for Entrepreneurs | Business Opportunity Hub"
         description="Discover practical business ideas, market research, manufacturing opportunities, export opportunities and actionable guides for entrepreneurs in Pakistan and emerging markets."
+        canonicalPath="/"
       />
 
       {/* Hero Section */}
@@ -63,21 +74,23 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, selectedRegion, 
 
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row gap-4 pt-2">
-              <button
-                onClick={() => onNavigate('opportunities')}
+              <a
+                href={getViewPath('opportunities')}
+                onClick={(e) => handleNav(e, 'opportunities')}
                 className="bg-amber-500 hover:bg-amber-600 text-slate-950 px-6 py-3.5 rounded font-bold text-xs uppercase tracking-wide transition-all shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2"
               >
                 <Lightbulb className="w-4 h-4" />
                 <span>Explore Business Ideas</span>
-              </button>
+              </a>
 
-              <button
-                onClick={() => onNavigate('market-research')}
+              <a
+                href={getViewPath('market-research')}
+                onClick={(e) => handleNav(e, 'market-research')}
                 className="border border-slate-600 hover:bg-slate-800 text-white px-6 py-3.5 rounded font-bold text-xs uppercase tracking-wide transition-all flex items-center justify-center gap-2"
               >
                 <BarChart3 className="w-4 h-4 text-amber-400" />
                 <span>Browse Market Research</span>
-              </button>
+              </a>
             </div>
 
             {/* Trust Metrics Pill */}
@@ -93,17 +106,17 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, selectedRegion, 
             </div>
           </div>
 
-          {/* Hero Right Visual & Stat Blocks */}
+          {/* Hero Right Visual & Dynamic Stat Blocks */}
           <div className="lg:col-span-5 space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="bg-slate-800/40 p-5 rounded-xl border border-slate-700/50">
-                <div className="text-amber-400 font-extrabold text-3xl">1,240+</div>
-                <div className="text-[10px] uppercase tracking-widest text-slate-400 font-bold mt-1">Vetted Opportunities</div>
+                <div className="text-amber-400 font-extrabold text-3xl">{opportunities.length}+</div>
+                <div className="text-[10px] uppercase tracking-widest text-slate-400 font-bold mt-1">Published Opportunities</div>
               </div>
 
               <div className="bg-slate-800/40 p-5 rounded-xl border border-slate-700/50">
-                <div className="text-amber-400 font-extrabold text-3xl">450+</div>
-                <div className="text-[10px] uppercase tracking-widest text-slate-400 font-bold mt-1">Market Reports</div>
+                <div className="text-amber-400 font-extrabold text-3xl">{reports.length}+</div>
+                <div className="text-[10px] uppercase tracking-widest text-slate-400 font-bold mt-1">Market Research Reports</div>
               </div>
             </div>
 
@@ -112,7 +125,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, selectedRegion, 
                 <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-amber-400">
                   <TrendingUp className="w-4 h-4" /> Market Feasibility Index
                 </div>
-                <span className="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-slate-300 font-semibold">Q1 2026 Vetted</span>
+                <span className="text-[10px] bg-slate-800 px-2 py-0.5 rounded text-slate-300 font-semibold">2026 Vetted</span>
               </div>
 
               <div className="space-y-2.5">
@@ -153,6 +166,88 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, selectedRegion, 
       {/* Ad Placement Below Hero */}
       <AdPlaceholder slot="hero-below" enabled={settings.showAdSensePreview} />
 
+      {/* Pakistani Industrial Clusters Section */}
+      <section className="max-w-7xl mx-auto px-4">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 pb-2 border-b border-slate-200">
+          <div>
+            <span className="text-xs font-bold uppercase tracking-wider text-amber-700">Pakistan-First Localized SEO Hubs</span>
+            <h2 className="text-2xl md:text-3xl font-serif font-bold text-slate-900">Major Pakistani Industrial & Machinery Clusters</h2>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {CITY_CLUSTERS.slice(0, 6).map(cluster => (
+            <a
+              key={cluster.id}
+              href={getViewPath('city', cluster.slug)}
+              onClick={(e) => handleNav(e, 'city', cluster.slug)}
+              className="bg-white hover:bg-slate-900 text-slate-800 hover:text-white border border-slate-200 hover:border-slate-800 p-5 rounded-2xl transition-all duration-200 group shadow-sm flex flex-col justify-between"
+            >
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold uppercase tracking-wider text-amber-600 group-hover:text-amber-400 flex items-center gap-1">
+                    <MapPin className="w-3.5 h-3.5" /> {cluster.province}
+                  </span>
+                  <span className="text-[10px] text-slate-500 group-hover:text-slate-400 font-semibold">Industrial Hub</span>
+                </div>
+                <h3 className="font-serif font-bold text-lg text-slate-900 group-hover:text-slate-100 transition-colors">
+                  {cluster.name} Cluster
+                </h3>
+                <p className="text-xs text-slate-600 group-hover:text-slate-300 line-clamp-2">
+                  {cluster.tagline}
+                </p>
+              </div>
+
+              <div className="mt-4 pt-3 border-t border-slate-100 group-hover:border-slate-800 flex items-center justify-between text-xs font-semibold text-amber-700 group-hover:text-amber-400">
+                <span>Explore {cluster.name} Feasibilities</span>
+                <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      {/* Investment Ranges Section */}
+      <section className="max-w-7xl mx-auto px-4">
+        <div className="bg-slate-900 text-white border border-slate-800 rounded-2xl p-6 md:p-8 space-y-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-1">
+                <DollarSign className="w-3.5 h-3.5" /> Capital Outlay Directory
+              </span>
+              <h2 className="text-2xl md:text-3xl font-serif font-bold text-slate-100">
+                Browse Business Ideas by Investment Tier
+              </h2>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {INVESTMENT_TIERS.map(tier => (
+              <a
+                key={tier.id}
+                href={getViewPath('investment', tier.slug)}
+                onClick={(e) => handleNav(e, 'investment', tier.slug)}
+                className="bg-slate-800/80 hover:bg-slate-800 border border-slate-700/80 hover:border-amber-500/50 p-5 rounded-xl transition-all group flex flex-col justify-between"
+              >
+                <div>
+                  <span className="text-[10px] font-bold text-amber-400 uppercase tracking-wider">{tier.usdEquivalent}</span>
+                  <h3 className="font-serif font-bold text-base text-slate-100 group-hover:text-amber-300 mt-1">
+                    {tier.pkLabel}
+                  </h3>
+                  <p className="text-xs text-slate-400 mt-2 line-clamp-2 leading-relaxed">
+                    {tier.summary}
+                  </p>
+                </div>
+                <div className="mt-4 pt-3 border-t border-slate-700/60 text-xs font-semibold text-amber-400 flex items-center justify-between">
+                  <span>View Ideas</span>
+                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Category Grid Section */}
       <section className="max-w-7xl mx-auto px-4">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 pb-2 border-b border-slate-200">
@@ -164,9 +259,10 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, selectedRegion, 
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
           {MAIN_CATEGORIES.map(cat => (
-            <button
+            <a
               key={cat.id}
-              onClick={() => onNavigate('category', cat.slug)}
+              href={getViewPath('category', cat.slug)}
+              onClick={(e) => handleNav(e, 'category', cat.slug)}
               className="bg-white hover:bg-slate-900 text-slate-800 hover:text-white border border-slate-200 hover:border-slate-800 p-4 rounded-xl text-left transition-all duration-200 group shadow-sm flex flex-col justify-between"
             >
               <div>
@@ -181,7 +277,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, selectedRegion, 
                 <span>Browse Cluster</span>
                 <ChevronRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
               </div>
-            </button>
+            </a>
           ))}
         </div>
       </section>
@@ -198,20 +294,22 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, selectedRegion, 
                 Featured Business Opportunities
               </h2>
             </div>
-            <button
-              onClick={() => onNavigate('opportunities')}
+            <a
+              href={getViewPath('opportunities')}
+              onClick={(e) => handleNav(e, 'opportunities')}
               className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-700 hover:text-amber-800 uppercase tracking-wider"
             >
               <span>View All Opportunities ({opportunities.length})</span>
               <ArrowRight className="w-4 h-4" />
-            </button>
+            </a>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {featuredOpps.map(opp => (
-              <div
+              <a
                 key={opp.id}
-                onClick={() => onNavigate('opportunity-detail', opp.slug)}
+                href={getViewPath('opportunity-detail', opp.slug)}
+                onClick={(e) => handleNav(e, 'opportunity-detail', opp.slug)}
                 className="bg-white border border-slate-200 hover:border-amber-500/50 rounded-xl p-5 shadow-sm hover:shadow-md transition-all cursor-pointer flex flex-col justify-between group"
               >
                 <div>
@@ -252,7 +350,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, selectedRegion, 
                     <ChevronRight className="w-3.5 h-3.5" />
                   </div>
                 </div>
-              </div>
+              </a>
             ))}
           </div>
         </div>
@@ -267,20 +365,22 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, selectedRegion, 
               15-Section Research Reports
             </h2>
           </div>
-          <button
-            onClick={() => onNavigate('market-research')}
+          <a
+            href={getViewPath('market-research')}
+            onClick={(e) => handleNav(e, 'market-research')}
             className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-700 hover:text-amber-800 uppercase tracking-wider"
           >
             <span>View All Reports ({reports.length})</span>
             <ArrowRight className="w-4 h-4" />
-          </button>
+          </a>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {featuredReports.map(rep => (
-            <div
+            <a
               key={rep.id}
-              onClick={() => onNavigate('market-report-detail', rep.slug)}
+              href={getViewPath('market-report-detail', rep.slug)}
+              onClick={(e) => handleNav(e, 'market-report-detail', rep.slug)}
               className="bg-slate-900 text-white rounded-2xl p-6 border border-slate-800 hover:border-amber-500/50 shadow-lg cursor-pointer transition-all flex flex-col justify-between group"
             >
               <div>
@@ -316,7 +416,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, selectedRegion, 
                   <ChevronRight className="w-4 h-4" />
                 </div>
               </div>
-            </div>
+            </a>
           ))}
         </div>
       </section>
@@ -335,26 +435,29 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, selectedRegion, 
               Pillar Guides & Practical Articles
             </h2>
           </div>
-          <button
-            onClick={() => onNavigate('articles')}
+          <a
+            href={getViewPath('articles')}
+            onClick={(e) => handleNav(e, 'articles')}
             className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-700 hover:text-amber-800 uppercase tracking-wider"
           >
             <span>View All Articles ({articles.length})</span>
             <ArrowRight className="w-4 h-4" />
-          </button>
+          </a>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {featuredArticles.map(art => (
-            <div
+            <a
               key={art.id}
-              onClick={() => onNavigate('article-detail', art.slug)}
+              href={getViewPath('article-detail', art.slug)}
+              onClick={(e) => handleNav(e, 'article-detail', art.slug)}
               className="bg-white border border-slate-200 hover:border-slate-400 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all cursor-pointer flex flex-col sm:flex-row group"
             >
               <div className="sm:w-2/5 relative h-48 sm:h-auto overflow-hidden">
                 <img
                   src={art.featuredImage}
                   alt={art.imageAlt}
+                  loading="lazy"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
                 {art.isPillar && (
@@ -388,7 +491,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ onNavigate, selectedRegion, 
                   </span>
                 </div>
               </div>
-            </div>
+            </a>
           ))}
         </div>
       </section>

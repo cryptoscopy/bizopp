@@ -3,6 +3,7 @@ import { AUTHORS } from '../../data/authors';
 import { CMSStore } from '../../services/cmsStore';
 import { Breadcrumbs } from '../common/Breadcrumbs';
 import { SEOMeta } from '../common/SEOMeta';
+import { NotFoundView } from './NotFoundView';
 import { ShieldCheck, BookOpen, BarChart3, ChevronRight } from 'lucide-react';
 
 interface AuthorDetailViewProps {
@@ -11,7 +12,12 @@ interface AuthorDetailViewProps {
 }
 
 export const AuthorDetailView: React.FC<AuthorDetailViewProps> = ({ slug, onNavigate }) => {
-  const author = AUTHORS.find(a => a.slug === slug) || AUTHORS[0];
+  const author = AUTHORS.find(a => a.slug === slug);
+
+  if (!author) {
+    return <NotFoundView onNavigate={onNavigate} />;
+  }
+
   const articles = CMSStore.getArticles().filter(a => a.authorId === author.id);
   const reports = CMSStore.getMarketReports().filter(r => r.authorId === author.id);
 

@@ -36,7 +36,7 @@ export interface Article {
   readingTime: string;
   isPillar?: boolean;
   pillarParentSlug?: string;
-  sources?: { title: string; url?: string; note?: string }[];
+  sources?: { title: string; url?: string; note?: string; publisher?: string; year?: string }[];
   faqs?: { question: string; answer: string }[];
   keyTakeaways?: string[];
   relatedOpportunityIds?: string[];

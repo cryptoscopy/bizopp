@@ -54,11 +54,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) =>
       requiredSkills: ['Quality Control', 'Basic Accounting'],
       equipmentNeeded: [{ item: 'Standard Assembly Machine', approxCostPKR: newOppCapital * 0.6, source: 'Gujranwala Dealer' }],
       salesChannels: ['Direct Wholesale', 'Online Catalog'],
-      competitionLevel: 'medium',
-      demandIndicator: 'Expanding',
+      competitionLevel: 'moderate',
+      demandIndicator: 'Growing',
       riskLevel: 'medium',
-      scalability: 'High',
-      complexity: 'Medium',
+      scalability: 'National',
+      complexity: 'Moderate',
       expectedProfitMarginPercent: 25,
       paybackPeriodMonths: 14,
       description: `Vetted feasibility model for ${newOppName}. High market demand across SME distribution networks.`,
@@ -67,6 +67,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) =>
         { stepNumber: 2, title: 'Setup Factory Unit', detail: 'Lease 1000 sq ft industrial hall.' },
       ],
       isFeatured: true,
+      publishedDate: new Date().toISOString().substring(0, 10),
+      updatedDate: new Date().toISOString().substring(0, 10),
     });
 
     setOpps(CMSStore.getOpportunities());
@@ -79,8 +81,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onNavigate }) =>
   };
 
   const handleToggleAdSense = () => {
-    const updated = CMSStore.updateSettings({ showAdSensePreview: !siteSettings.showAdSensePreview });
-    setSiteSettings(updated);
+    const updatedSettings = { ...siteSettings, showAdSensePreview: !siteSettings.showAdSensePreview };
+    CMSStore.updateSettings(updatedSettings);
+    setSiteSettings(updatedSettings);
   };
 
   const handleReset = () => {

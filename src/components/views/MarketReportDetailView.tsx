@@ -4,6 +4,7 @@ import { Breadcrumbs } from '../common/Breadcrumbs';
 import { SEOMeta } from '../common/SEOMeta';
 import { TableOfContents, TOCItem } from '../common/TableOfContents';
 import { AdPlaceholder } from '../common/AdPlaceholder';
+import { NotFoundView } from './NotFoundView';
 import { ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 import {
   BarChart3,
@@ -33,8 +34,12 @@ export const MarketReportDetailView: React.FC<MarketReportDetailViewProps> = ({
   onOpenLeadModal,
 }) => {
   const reports = CMSStore.getMarketReports();
-  const rep = reports.find(r => r.slug === slug) || reports[0];
+  const rep = reports.find(r => r.slug === slug);
   const settings = CMSStore.getSettings();
+
+  if (!rep) {
+    return <NotFoundView onNavigate={onNavigate} />;
+  }
 
   const author = rep.author || {
     name: 'Tariq Malik',

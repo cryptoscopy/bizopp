@@ -1,6 +1,9 @@
 import React from 'react';
 import { MAIN_CATEGORIES } from '../../data/categories';
+import { CITY_CLUSTERS } from '../../data/cityClusters';
+import { INVESTMENT_TIERS } from '../../data/investmentTiers';
 import { Shield, Mail, ArrowUpRight } from 'lucide-react';
+import { getViewPath } from '../../utils/router';
 
 interface FooterProps {
   onNavigate: (view: string, param?: string) => void;
@@ -8,23 +11,29 @@ interface FooterProps {
 }
 
 export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLeadModal }) => {
+  const handleNav = (e: React.MouseEvent, view: string, param?: string) => {
+    e.preventDefault();
+    onNavigate(view, param);
+  };
+
   return (
     <footer className="bg-[#0f172a] text-slate-300 border-t border-slate-800 pt-12 pb-8">
       <div className="max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 pb-10 border-b border-slate-800">
           {/* Col 1: Brand & Positioning */}
           <div className="lg:col-span-2 space-y-4">
-            <div
-              onClick={() => onNavigate('home')}
-              className="cursor-pointer flex items-center gap-2.5"
+            <a
+              href={getViewPath('home')}
+              onClick={(e) => handleNav(e, 'home')}
+              className="flex items-center gap-2.5 group"
             >
-              <div className="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center text-slate-950 font-black font-serif text-base shadow-md shadow-amber-500/20">
+              <div className="w-8 h-8 rounded-lg bg-amber-500 flex items-center justify-center text-slate-950 font-black font-serif text-base shadow-md shadow-amber-500/20 group-hover:bg-amber-400 transition-colors">
                 B
               </div>
               <span className="text-lg font-extrabold tracking-tighter text-amber-400 uppercase">
                 BUSINESS OPPORTUNITY HUB
               </span>
-            </div>
+            </a>
 
             <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
               Practical Ideas. Real Markets. Better Business Decisions.
@@ -46,150 +55,132 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLeadModal }) =
             </h4>
             <ul className="space-y-2 text-xs text-slate-400">
               <li>
-                <button
-                  onClick={() => onNavigate('opportunities')}
+                <a
+                  href={getViewPath('opportunities')}
+                  onClick={(e) => handleNav(e, 'opportunities')}
                   className="hover:text-amber-400 transition-colors"
                 >
                   Business Ideas Directory
-                </button>
+                </a>
               </li>
               <li>
-                <button
-                  onClick={() => onNavigate('market-research')}
+                <a
+                  href={getViewPath('market-research')}
+                  onClick={(e) => handleNav(e, 'market-research')}
                   className="hover:text-amber-400 transition-colors"
                 >
                   Market Research Database
-                </button>
+                </a>
               </li>
               <li>
-                <button
-                  onClick={() => onNavigate('category', 'manufacturing')}
+                <a
+                  href={getViewPath('category', 'manufacturing')}
+                  onClick={(e) => handleNav(e, 'category', 'manufacturing')}
                   className="hover:text-amber-400 transition-colors"
                 >
                   Manufacturing & Assembly
-                </button>
+                </a>
               </li>
               <li>
-                <button
-                  onClick={() => onNavigate('category', 'import-export')}
+                <a
+                  href={getViewPath('category', 'import-export')}
+                  onClick={(e) => handleNav(e, 'category', 'import-export')}
                   className="hover:text-amber-400 transition-colors"
                 >
                   Import & Export Corridors
-                </button>
+                </a>
               </li>
               <li>
-                <button
-                  onClick={() => onNavigate('category', 'e-commerce')}
+                <a
+                  href={getViewPath('category', 'e-commerce')}
+                  onClick={(e) => handleNav(e, 'category', 'e-commerce')}
                   className="hover:text-amber-400 transition-colors"
                 >
                   E-commerce & Wholesale
-                </button>
+                </a>
               </li>
             </ul>
           </div>
 
-          {/* Col 3: Categories */}
+          {/* Col 3: Pakistani Industrial Clusters */}
           <div className="space-y-3">
             <h4 className="text-xs font-bold uppercase tracking-wider text-slate-200">
-              Topics & Regions
+              Pakistani City Clusters
             </h4>
             <ul className="space-y-2 text-xs text-slate-400">
-              <li>
-                <button
-                  onClick={() => onNavigate('category', 'pakistan-market')}
-                  className="hover:text-amber-400 transition-colors"
-                >
-                  Pakistan Industrial Estates
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => onNavigate('category', 'international-markets')}
-                  className="hover:text-amber-400 transition-colors"
-                >
-                  UAE & Saudi Arabia Markets
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => onNavigate('category', 'ai-business')}
-                  className="hover:text-amber-400 transition-colors"
-                >
-                  AI in SME Business
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => onNavigate('authors')}
-                  className="hover:text-amber-400 transition-colors"
-                >
-                  Research Analysts & Authors
-                </button>
-              </li>
+              {CITY_CLUSTERS.slice(0, 6).map(c => (
+                <li key={c.id}>
+                  <a
+                    href={getViewPath('city', c.slug)}
+                    onClick={(e) => handleNav(e, 'city', c.slug)}
+                    className="hover:text-amber-400 transition-colors"
+                  >
+                    {c.name} Industrial Hub
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Col 4: Trust & Editorial */}
+          {/* Col 4: Trust & Investment Ranges */}
           <div className="space-y-3">
             <h4 className="text-xs font-bold uppercase tracking-wider text-slate-200">
-              Trust & Transparency
+              Trust & Investment Filters
             </h4>
             <ul className="space-y-2 text-xs text-slate-400">
               <li>
-                <button
-                  onClick={() => onNavigate('about')}
+                <a
+                  href={getViewPath('investment', 'under-500k')}
+                  onClick={(e) => handleNav(e, 'investment', 'under-500k')}
+                  className="hover:text-amber-400 transition-colors"
+                >
+                  Ideas Under PKR 5 Lakh
+                </a>
+              </li>
+              <li>
+                <a
+                  href={getViewPath('investment', '1m-to-2m')}
+                  onClick={(e) => handleNav(e, 'investment', '1m-to-2m')}
+                  className="hover:text-amber-400 transition-colors"
+                >
+                  Ideas PKR 10 Lakh - 20 Lakh
+                </a>
+              </li>
+              <li>
+                <a
+                  href={getViewPath('about')}
+                  onClick={(e) => handleNav(e, 'about')}
                   className="hover:text-amber-400 transition-colors"
                 >
                   About Us
-                </button>
+                </a>
               </li>
               <li>
-                <button
-                  onClick={() => onNavigate('editorial-policy')}
+                <a
+                  href={getViewPath('editorial-policy')}
+                  onClick={(e) => handleNav(e, 'editorial-policy')}
                   className="hover:text-amber-400 transition-colors"
                 >
                   Editorial & Methodology Policy
-                </button>
+                </a>
               </li>
               <li>
-                <button
-                  onClick={() => onNavigate('privacy-policy')}
+                <a
+                  href={getViewPath('privacy-policy')}
+                  onClick={(e) => handleNav(e, 'privacy-policy')}
                   className="hover:text-amber-400 transition-colors"
                 >
                   Privacy Policy
-                </button>
+                </a>
               </li>
               <li>
-                <button
-                  onClick={() => onNavigate('terms')}
-                  className="hover:text-amber-400 transition-colors"
-                >
-                  Terms & Conditions
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => onNavigate('disclaimer')}
-                  className="hover:text-amber-400 transition-colors"
-                >
-                  Risk Disclaimer
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => onNavigate('submit-opportunity')}
+                <a
+                  href={getViewPath('submit-opportunity')}
+                  onClick={(e) => handleNav(e, 'submit-opportunity')}
                   className="hover:text-amber-400 transition-colors text-amber-400 font-medium"
                 >
                   Submit Business Opportunity →
-                </button>
-              </li>
-              <li>
-                <button
-                  onClick={() => onNavigate('contact')}
-                  className="hover:text-amber-400 transition-colors"
-                >
-                  Contact Research Desk
-                </button>
+                </a>
               </li>
             </ul>
           </div>
@@ -210,21 +201,25 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenLeadModal }) =
           <p>© {new Date().getFullYear()} Business Opportunity Hub. All rights reserved.</p>
 
           <div className="flex items-center space-x-6">
-            <button
-              onClick={() => onNavigate('sitemap')}
+            <a
+              href="/sitemap.xml"
+              target="_blank"
+              rel="noopener noreferrer"
               className="hover:text-amber-400 transition-colors"
             >
               XML Sitemap
-            </button>
-            <button
-              onClick={() => onNavigate('contact')}
+            </a>
+            <a
+              href={getViewPath('contact')}
+              onClick={(e) => handleNav(e, 'contact')}
               className="hover:text-amber-400 transition-colors"
             >
               Contact Desk
-            </button>
+            </a>
           </div>
         </div>
       </div>
     </footer>
   );
 };
+

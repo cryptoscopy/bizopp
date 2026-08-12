@@ -3,6 +3,7 @@ import { CMSStore } from '../../services/cmsStore';
 import { Breadcrumbs } from '../common/Breadcrumbs';
 import { SEOMeta } from '../common/SEOMeta';
 import { AdPlaceholder } from '../common/AdPlaceholder';
+import { NotFoundView } from './NotFoundView';
 import {
   Lightbulb,
   DollarSign,
@@ -31,8 +32,12 @@ export const OpportunityDetailView: React.FC<OpportunityDetailViewProps> = ({
   onOpenLeadModal,
 }) => {
   const opps = CMSStore.getOpportunities();
-  const opp = opps.find(o => o.slug === slug) || opps[0];
+  const opp = opps.find(o => o.slug === slug);
   const settings = CMSStore.getSettings();
+
+  if (!opp) {
+    return <NotFoundView onNavigate={onNavigate} />;
+  }
 
   const relatedReport = opp.relatedReportId
     ? CMSStore.getMarketReports().find(r => r.id === opp.relatedReportId)

@@ -3,6 +3,7 @@ import { CMSStore } from '../../services/cmsStore';
 import { Breadcrumbs } from '../common/Breadcrumbs';
 import { SEOMeta } from '../common/SEOMeta';
 import { AdPlaceholder } from '../common/AdPlaceholder';
+import { getViewPath } from '../../utils/router';
 import { MarketRegion } from '../../types';
 import {
   BarChart3,
@@ -122,9 +123,13 @@ export const MarketResearchView: React.FC<MarketResearchViewProps> = ({
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filtered.map(rep => (
-            <div
+            <a
               key={rep.id}
-              onClick={() => onNavigate('market-report-detail', rep.slug)}
+              href={getViewPath('market-report-detail', rep.slug)}
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigate('market-report-detail', rep.slug);
+              }}
               className="bg-slate-900 text-white border border-slate-800 hover:border-amber-500/50 rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all cursor-pointer flex flex-col justify-between group"
             >
               <div>
@@ -165,7 +170,7 @@ export const MarketResearchView: React.FC<MarketResearchViewProps> = ({
                   <ChevronRight className="w-4 h-4" />
                 </div>
               </div>
-            </div>
+            </a>
           ))}
         </div>
       </div>

@@ -3,6 +3,7 @@ import { CMSStore } from '../../services/cmsStore';
 import { Breadcrumbs } from '../common/Breadcrumbs';
 import { SEOMeta } from '../common/SEOMeta';
 import { AdPlaceholder } from '../common/AdPlaceholder';
+import { getViewPath } from '../../utils/router';
 import { FileText, Search, Clock, ChevronRight, User, Tag } from 'lucide-react';
 
 interface ArticlesViewProps {
@@ -105,15 +106,20 @@ export const ArticlesView: React.FC<ArticlesViewProps> = ({ onNavigate, selected
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {filtered.map(art => (
-            <div
+            <a
               key={art.id}
-              onClick={() => onNavigate('article-detail', art.slug)}
+              href={getViewPath('article-detail', art.slug)}
+              onClick={(e) => {
+                e.preventDefault();
+                onNavigate('article-detail', art.slug);
+              }}
               className="bg-white border border-slate-200 hover:border-slate-400 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all cursor-pointer flex flex-col sm:flex-row group"
             >
               <div className="sm:w-2/5 relative h-48 sm:h-auto overflow-hidden">
                 <img
                   src={art.featuredImage}
                   alt={art.imageAlt}
+                  loading="lazy"
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
                 {art.isPillar && (
@@ -147,7 +153,7 @@ export const ArticlesView: React.FC<ArticlesViewProps> = ({ onNavigate, selected
                   </span>
                 </div>
               </div>
-            </div>
+            </a>
           ))}
         </div>
       </div>

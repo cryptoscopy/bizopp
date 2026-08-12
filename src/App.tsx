@@ -4,6 +4,7 @@ import { Header } from './components/layout/Header';
 import { Footer } from './components/layout/Footer';
 import { SearchModal } from './components/common/SearchModal';
 import { LeadModal } from './components/common/LeadModal';
+import { parseCurrentPath, navigateTo } from './utils/router';
 
 import { HomeView } from './components/views/HomeView';
 import { OpportunitiesView } from './components/views/OpportunitiesView';
@@ -19,13 +20,29 @@ import { SubmitOpportunityView } from './components/views/SubmitOpportunityView'
 import { TrustPagesView } from './components/views/TrustPagesView';
 import { SitemapView } from './components/views/SitemapView';
 import { AdminDashboard } from './components/views/AdminDashboard';
+import { CityClusterView } from './components/views/CityClusterView';
+import { InvestmentTierView } from './components/views/InvestmentTierView';
+import { NotFoundView } from './components/views/NotFoundView';
 
 export function App() {
-  const [activeView, setActiveView] = useState<string>('home');
-  const [currentParam, setCurrentParam] = useState<string>('');
+  const initialRoute = parseCurrentPath(window.location.pathname);
+  const [activeView, setActiveView] = useState<string>(initialRoute.view);
+  const [currentParam, setCurrentParam] = useState<string>(initialRoute.param || '');
   const [selectedRegion, setSelectedRegion] = useState<MarketRegion>('pakistan');
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
   const [isLeadModalOpen, setIsLeadModalOpen] = useState<boolean>(false);
+
+  // Sync state with URL popstate events (browser back/forward)
+  useEffect(() => {
+    const handlePopState = () => {
+      const route = parseCurrentPath(window.location.pathname);
+      setActiveView(route.view);
+      setCurrentParam(route.param || '');
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   // Scroll to top on navigation view changes
   useEffect(() => {
@@ -33,6 +50,7 @@ export function App() {
   }, [activeView, currentParam]);
 
   const handleNavigate = (view: string, param?: string) => {
+    navigateTo(view, param);
     setActiveView(view);
     setCurrentParam(param || '');
   };
@@ -108,6 +126,24 @@ export function App() {
           />
         );
 
+      case 'city':
+        return (
+          <CityClusterView
+            slug={currentParam}
+            onNavigate={handleNavigate}
+            onOpenLeadModal={() => setIsLeadModalOpen(true)}
+          />
+        );
+
+      case 'investment':
+        return (
+          <InvestmentTierView
+            slug={currentParam}
+            onNavigate={handleNavigate}
+            onOpenLeadModal={() => setIsLeadModalOpen(true)}
+          />
+        );
+
       case 'authors':
         return <AuthorsView onNavigate={handleNavigate} />;
 
@@ -141,14 +177,11 @@ export function App() {
       case 'admin':
         return <AdminDashboard onNavigate={handleNavigate} />;
 
+      case '404':
+        return <NotFoundView onNavigate={handleNavigate} />;
+
       default:
-        return (
-          <HomeView
-            onNavigate={handleNavigate}
-            selectedRegion={selectedRegion}
-            onOpenLeadModal={() => setIsLeadModalOpen(true)}
-          />
-        );
+        return <NotFoundView onNavigate={handleNavigate} />;
     }
   };
 

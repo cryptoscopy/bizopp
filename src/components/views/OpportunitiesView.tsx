@@ -4,6 +4,7 @@ import { BusinessOpportunity, InvestmentLevel, RiskLevel, BusinessModelType, Mar
 import { Breadcrumbs } from '../common/Breadcrumbs';
 import { SEOMeta } from '../common/SEOMeta';
 import { AdPlaceholder } from '../common/AdPlaceholder';
+import { getViewPath } from '../../utils/router';
 import {
   Lightbulb,
   Search,
@@ -217,9 +218,13 @@ export const OpportunitiesView: React.FC<OpportunitiesViewProps> = ({
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filtered.map(opp => (
-              <div
+              <a
                 key={opp.id}
-                onClick={() => onNavigate('opportunity-detail', opp.slug)}
+                href={getViewPath('opportunity-detail', opp.slug)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  onNavigate('opportunity-detail', opp.slug);
+                }}
                 className="bg-white border border-slate-200 hover:border-amber-500/60 rounded-2xl p-6 shadow-sm hover:shadow-md transition-all cursor-pointer flex flex-col justify-between group"
               >
                 <div>
@@ -264,7 +269,7 @@ export const OpportunitiesView: React.FC<OpportunitiesViewProps> = ({
                     <ChevronRight className="w-4 h-4" />
                   </div>
                 </div>
-              </div>
+              </a>
             ))}
           </div>
         )}

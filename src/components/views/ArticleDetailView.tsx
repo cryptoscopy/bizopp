@@ -5,6 +5,7 @@ import { SEOMeta } from '../common/SEOMeta';
 import { TableOfContents, TOCItem } from '../common/TableOfContents';
 import { AdPlaceholder } from '../common/AdPlaceholder';
 import { NewsletterForm } from '../common/NewsletterForm';
+import { NotFoundView } from './NotFoundView';
 import {
   Clock,
   Calendar,
@@ -31,15 +32,23 @@ export const ArticleDetailView: React.FC<ArticleDetailViewProps> = ({
   onOpenLeadModal,
 }) => {
   const articles = CMSStore.getArticles();
-  const article = articles.find(a => a.slug === slug) || articles[0];
+  const article = articles.find(a => a.slug === slug);
   const settings = CMSStore.getSettings();
 
+  if (!article) {
+    return <NotFoundView onNavigate={onNavigate} />;
+  }
+
   const author = article.author || {
+    id: 'author-1',
+    slug: 'tariq-malik',
     name: 'Tariq Malik',
     title: 'Senior Industrial Research Analyst',
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&auto=format&fit=crop&q=80',
     bio: 'Tariq has over 14 years of hands-on experience evaluating small manufacturing units, machinery procurement, and cost-accounting.',
     expertise: ['Manufacturing Sourcing', 'Engineering Costing', 'Equipment ROI'],
+    linkedinUrl: 'https://linkedin.com/in/tariq-malik-research',
+    email: 'tariq@businessopportunityhub.com',
   };
 
   // Generate Table of Contents items dynamically from H1/H2 tags or static headers

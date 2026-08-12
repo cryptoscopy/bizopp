@@ -3,6 +3,8 @@ import { INITIAL_ARTICLES } from '../data/articles';
 import { INITIAL_OPPORTUNITIES } from '../data/opportunities';
 import { INITIAL_MARKET_REPORTS } from '../data/marketReports';
 import { INITIAL_AUTHORS } from '../data/authors';
+import { CITY_CLUSTERS, CityCluster } from '../data/cityClusters';
+import { INVESTMENT_TIERS, InvestmentTier } from '../data/investmentTiers';
 
 const STORAGE_KEYS = {
   ARTICLES: 'boh_cms_articles',
@@ -24,9 +26,12 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   currencySymbol: 'PKR',
 };
 
-// Helper for local storage
+// Helper for local storage safely guarded for SSR
 function getStored<T>(key: string, defaultValue: T): T {
   try {
+    if (typeof window === 'undefined' || !window.localStorage) {
+      return defaultValue;
+    }
     const item = localStorage.getItem(key);
     return item ? JSON.parse(item) : defaultValue;
   } catch (e) {
@@ -37,7 +42,9 @@ function getStored<T>(key: string, defaultValue: T): T {
 
 function setStored<T>(key: string, value: T): void {
   try {
-    localStorage.setItem(key, JSON.stringify(value));
+    if (typeof window !== 'undefined' && window.localStorage) {
+      localStorage.setItem(key, JSON.stringify(value));
+    }
   } catch (e) {
     console.warn(`Error writing ${key} to localStorage:`, e);
   }
@@ -69,6 +76,14 @@ export class CMSStore {
 
   static getAuthors(): Author[] {
     return getStored<Author[]>(STORAGE_KEYS.AUTHORS, INITIAL_AUTHORS);
+  }
+
+  static getCityClusters(): CityCluster[] {
+    return CITY_CLUSTERS;
+  }
+
+  static getInvestmentTiers(): InvestmentTier[] {
+    return INVESTMENT_TIERS;
   }
 
   static getLeads(): LeadSubmission[] {
@@ -179,6 +194,18 @@ export class CMSStore {
 
   static saveSettings(settings: SiteSettings): void {
     setStored(STORAGE_KEYS.SETTINGS, settings);
+  }
+
+  static addOpportunity(opportunity: BusinessOpportunity): void {
+    this.saveOpportunity(opportunity);
+  }
+
+  static updateSettings(settings: SiteSettings): void {
+    this.saveSettings(settings);
+  }
+
+  static resetToDefaults(): void {
+    this.resetToDefault();
   }
 
   static resetToDefault(): void {
