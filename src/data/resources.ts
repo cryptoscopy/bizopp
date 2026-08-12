@@ -1,0 +1,52 @@
+import { ResourceItem } from '../types';
+
+export const INITIAL_RESOURCES: ResourceItem[] = [
+  {
+    id: 'res-weboc-customs',
+    title: 'WebOC Customs & Trade Portal',
+    category: 'Customs & Trade',
+    description: 'Official Pakistan Customs portal for filing Goods Declarations (GD), checking HS code tariff rates, and managing import/export clearances.',
+    link: 'https://www.weboc.gov.pk',
+    rating: 4.8,
+    isRecommended: true,
+  },
+  {
+    id: 'res-quickbooks-online',
+    title: 'QuickBooks Online / Zoho Books',
+    category: 'Accounting',
+    description: 'Cloud accounting software for managing multi-currency invoices, GST/Sales tax ledgers, and inventory valuation for small businesses.',
+    link: 'https://zoho.com/books',
+    affiliateBadge: 'Affiliate Partner',
+    rating: 4.7,
+    isRecommended: true,
+  },
+  {
+    id: 'res-alibaba-supplier',
+    title: 'Alibaba Verified Supplier Account',
+    category: 'E-commerce',
+    description: 'The premier global B2B marketplace for finding international buyers in GCC, Europe, and Americas for Pakistani manufacturers.',
+    link: 'https://seller.alibaba.com',
+    affiliateBadge: 'Featured Partner',
+    rating: 4.9,
+    isRecommended: true,
+  },
+  {
+    id: 'res-shopify-store',
+    title: 'Shopify E-commerce Engine',
+    category: 'E-commerce',
+    description: 'Build a high-converting D2C store for export or local sales with local Cash-on-Delivery (COD) courier app integrations.',
+    link: 'https://www.shopify.com',
+    affiliateBadge: 'Affiliate Partner',
+    rating: 4.9,
+    isRecommended: true,
+  },
+  {
+    id: 'res-trade-map',
+    title: 'ITC Trade Map (International Trade Centre)',
+    category: 'Customs & Trade',
+    description: 'Free trade database providing import/export values, tariff rates, and global trade flows by HS Code for 220+ countries.',
+    link: 'https://www.trademap.org',
+    rating: 5.0,
+    isRecommended: true,
+  },
+];
