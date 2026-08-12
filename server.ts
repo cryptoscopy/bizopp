@@ -2,6 +2,7 @@ import express from "express";
 import path from "path";
 import fs from "fs";
 import { createServer as createViteServer } from "vite";
+import { prerenderUrl } from "./src/server/prerender";
 
 async function startServer() {
   const app = express();
@@ -55,13 +56,14 @@ async function startServer() {
     });
     app.use(vite.middlewares);
 
-    // Dev SPA Fallback
+    // Dev Prerendering HTML Fallback
     app.get("*", async (req, res, next) => {
       const url = req.originalUrl;
       try {
         let template = fs.readFileSync(path.join(process.cwd(), "index.html"), "utf-8");
         template = await vite.transformIndexHtml(url, template);
-        res.status(200).set({ "Content-Type": "text/html" }).end(template);
+        const result = prerenderUrl(url, template);
+        res.status(result.statusCode).set({ "Content-Type": "text/html; charset=utf-8" }).end(result.html);
       } catch (e) {
         vite.ssrFixStacktrace(e as Error);
         next(e);
@@ -71,9 +73,17 @@ async function startServer() {
     // Serve static assets from dist
     app.use(express.static(distPath));
 
-    // Production SPA Fallback
+    // Production Prerendering HTML Fallback
     app.get("*", (req, res) => {
-      res.sendFile(path.join(distPath, "index.html"));
+      const url = req.originalUrl;
+      const indexPath = path.join(distPath, "index.html");
+      if (fs.existsSync(indexPath)) {
+        const template = fs.readFileSync(indexPath, "utf-8");
+        const result = prerenderUrl(url, template);
+        res.status(result.statusCode).set({ "Content-Type": "text/html; charset=utf-8" }).send(result.html);
+      } else {
+        res.status(500).send("Index template not found");
+      }
     });
   }
 
